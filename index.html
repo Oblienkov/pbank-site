@@ -1,1 +1,333 @@
-<h1>Hello World</h1>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>П-Банк</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #0a0a2a, #000000);
+      color: #f0f0f0;
+    }
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('img/2025-06-07_16.04.31.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.15;
+    z-index: -1;
+  }
+
+    header {
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+    }
+    .header-left h1 {
+      margin: 0;
+      color: #ff5fa2;
+    }
+    .header-left p {
+      margin: 0;
+      color: #ffa8d8;
+      font-size: 14px;
+    }
+    .header-right {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .user-info {
+      background-color: #ff5fa2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    .user-info img {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+      border-radius: 50%;
+    }
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 40px;
+      right: 0;
+      background: #1e1e2f;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      overflow: hidden;
+      z-index: 1000;
+    }
+    .dropdown a {
+      display: block;
+      padding: 10px 15px;
+      color: #fff;
+      text-decoration: none;
+    }
+    .dropdown a:hover {
+      background-color: #333;
+    }
+    nav {
+      background-color: rgba(0, 0, 0, 0.6);
+      text-align: center;
+      padding: 10px;
+    }
+    nav a {
+      color: #ffffff;
+      margin: 0 15px;
+      text-decoration: none;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+  padding: 20px;
+  max-width: 1000px;
+  margin: auto;
+  min-height: calc(100vh - 160px); /* учитывает header, nav и footer */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+    .card {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #000;
+    }
+    #authModal, #supportModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    #authCard, #supportCard {
+      background-color: #1e1e2f;
+      padding: 30px;
+      border-radius: 10px;
+      width: 360px;
+    }
+    footer {
+      background-color: rgba(0, 0, 0, 0.8);
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <h1>П-Банк</h1>
+      <p>Надёжный банк для нашего сервера</p>
+    </div>
+    <div class="header-right" id="authSection"></div>
+  </header>
+
+  <nav>
+    <a href="index.html">Главная</a>
+    <a href="services.html">Услуги</a>
+    <a href="contacts.html">Контакты</a>
+    <a href="deposit.html">Пополнение</a>
+  </nav>
+
+  <main>
+    <div class="card">
+      <h2 style="font-size: 28px; color: #ffffff;">Почему выбрать нас?</h2>
+      <ul style="font-size: 18px; line-height: 1.6;">
+        <li>Надёжность и стабильность</li>
+        <li>Мгновенные переводы между игроками</li>
+        <li>Обмен валют: алмазы, блоки, незерит</li>
+        <li>Кредиты и накопления</li>
+        <li>Безопасность: только вы управляете своими средствами</li>
+        <li>Поддержка 24/7 от команды администраторов</li>
+        <li>Уникальные бонусы за частое использование</li>
+        <li>Личный кабинет с управлением счётом и настройками</li>
+        <li>Подключение к серверу Minecraft через никнейм</li>
+      </ul>
+    </div>
+  </main>
+
+  <div id="authModal">
+    <div id="authCard" style="position: relative; background: linear-gradient(to bottom, #1a1a2e, #0a0a2a); padding: 40px 30px; border-radius: 20px; width: 360px; box-shadow: 0 0 20px rgba(0,0,0,0.6); color: #fff;">
+      <div onclick="document.getElementById('authModal').style.display='none'" style="position: absolute; top: 10px; right: 10px; width: 14px; height: 14px; background: red; border-radius: 50%; cursor: pointer;"></div>
+      <h2 style="text-align:center; color:#ff5fa2; margin-bottom: 20px;">Вход / Регистрация</h2>
+      <div id="authError" style="color: #ff5f5f; font-size: 14px; margin-bottom: 10px; display: none;"></div>
+      <input type="text" id="nickname" placeholder="Ник (только при регистрации)" style="display: block; width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: none; background: #fff; color: #000;">
+      <input type="email" id="email" placeholder="Электронная почта" style="display: block; width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: none; background: #fff; color: #000;">
+      <input type="password" id="password" placeholder="Пароль" style="display: block; width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 10px; border: none; background: #fff; color: #000;">
+      <button onclick="loginUser()" style="display: block; width: 100%; padding: 12px; border: none; border-radius: 10px; background: linear-gradient(to right, #ff5fa2, #ff80c1); color: #fff; font-weight: bold; cursor: pointer;">Войти</button>
+      <p style="text-align:center; margin: 10px 0;">Нет аккаунта?</p>
+      <button onclick="registerUser()" style="display: block; width: 100%; padding: 12px; border: none; border-radius: 10px; background: linear-gradient(to right, #ff5fa2, #ff80c1); color: #fff; font-weight: bold; cursor: pointer;">Регистрация</button>
+    </div>
+  </div>
+
+  <div id="supportModal">
+    <div id="supportCard" style="position: relative;">
+      <div onclick="closeSupport()" style="position: absolute; top: 8px; right: 8px; width: 12px; height: 12px; background: red; border-radius: 50%; cursor: pointer;"></div>
+      <h3>Чат с поддержкой</h3>
+      <div id="supportChat" style="height:200px; overflow-y:auto; background:#111; padding:10px; border-radius:5px; margin-bottom:10px;"></div>
+      <input id="supportMessage" placeholder="Ваше сообщение..." style="width:100%; padding:10px; border-radius:5px; margin-bottom:10px;">
+      <button onclick="sendSupportMessage()" style="width:100%; padding:10px; background:#ff5fa2; border:none; border-radius:5px;">Отправить</button>
+      <button onclick="closeSupport()" style="margin-top:5px; width:100%; padding:10px; background:#444; border:none; border-radius:5px; color:#fff;">Закрыть</button>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 П-Банк. Все права защищены.
+  </footer>
+
+  <script>
+    let usersDB = JSON.parse(localStorage.getItem('pbank_users')) || [];
+    let currentUser = JSON.parse(localStorage.getItem('pbank_currentUser')) || null;
+    let supportMessages = JSON.parse(localStorage.getItem('pbank_support_chat')) || {};
+
+    function toggleAuth() {
+      const modal = document.getElementById('authModal');
+      modal.style.display = 'flex';
+      modal.style.justifyContent = 'center';
+      modal.style.alignItems = 'center';
+    }
+    function closeSupport() {
+      document.getElementById('supportModal').style.display = 'none';
+    }
+    function openSupport() {
+      document.getElementById('supportModal').style.display = 'flex';
+      loadSupportChat();
+    }
+    function generateId() {
+      return Math.random().toString(36).substr(2, 9);
+    }
+    function registerUser() {
+      const nickname = document.getElementById('nickname').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      if (!nickname || !email || !password) return alert('Заполните все поля!');
+      if (usersDB.some(u => u.email === email)) return alert('Email уже зарегистрирован!');
+      if (usersDB.some(u => u.nickname === nickname)) return alert('Ник уже занят!');
+      const isAdmin = ["B1gTorch", "FlouD__"].includes(nickname);
+      const newUser = { id: generateId(), nickname, email, password, balance: 0, avatar: `https://mc-heads.net/avatar/${nickname}/40`, isAdmin };
+      usersDB.push(newUser);
+      localStorage.setItem('pbank_users', JSON.stringify(usersDB));
+      currentUser = newUser;
+      localStorage.setItem('pbank_currentUser', JSON.stringify(currentUser));
+      updateUI();
+      toggleAuth();
+      const errorBox = document.getElementById('authError');
+      if (errorBox) errorBox.style.display = 'none';
+    }
+    function loginUser() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const user = usersDB.find(u => u.email === email && u.password === password);
+      if (!user) {
+        const errorBox = document.getElementById('authError');
+        if (errorBox) {
+          errorBox.textContent = '❌ Неверный email или пароль';
+          errorBox.style.display = 'block';
+        }
+        return;
+      }
+      currentUser = user;
+      localStorage.setItem('pbank_currentUser', JSON.stringify(currentUser));
+      updateUI();
+      toggleAuth();
+    }
+    function logoutUser() {
+      currentUser = null;
+      localStorage.removeItem('pbank_currentUser');
+      updateUI();
+    }
+    function updateUI() {
+      const section = document.getElementById('authSection');
+      if (currentUser) {
+        section.innerHTML = `
+          <div class="user-info" onclick="toggleDropdown()">
+            ${currentUser.nickname}
+            <img src="${currentUser.avatar}" />
+          </div>
+          <div class="dropdown" id="userDropdown">
+            <a href="account.html">Личный кабинет</a>
+            <a href="#" onclick="openSupport()">Поддержка</a>
+            <a href="#" onclick="logoutUser()">Выйти</a>
+          </div>`;
+      } else {
+        section.innerHTML = `<button onclick=\"toggleAuth()\" style=\"display: flex; align-items: center; gap: 8px; padding: 10px 16px; border: none; border-radius: 10px; background: linear-gradient(to right, #ff5fa2, #ff80c1); color: #fff; font-weight: bold; cursor: pointer;\">Войти <img src='https://img.icons8.com/ios-glyphs/24/ffffff/user--v1.png'/></button>`;
+      }
+    }
+    function toggleDropdown() {
+      const dd = document.getElementById('userDropdown');
+      dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // --- Чат поддержки с отдельными диалогами ---
+    function getSupportChatId() {
+      return currentUser ? `support_${currentUser.id}` : null;
+    }
+    function loadSupportChat() {
+      const box = document.getElementById('supportChat');
+      if (!box || !currentUser) return;
+      const chatId = getSupportChatId();
+      const messages = supportMessages[chatId] || [];
+      box.innerHTML = '';
+      messages.forEach(msg => {
+        const div = document.createElement('div');
+        div.style.marginBottom = '5px';
+        div.style.textAlign = msg.from === currentUser.id ? 'right' : 'left';
+        div.textContent = `${msg.nickname}: ${msg.text}`;
+        box.appendChild(div);
+      });
+      box.scrollTop = box.scrollHeight;
+    }
+    function sendSupportMessage() {
+      const input = document.getElementById('supportMessage');
+      const text = input.value.trim();
+      if (!text || !currentUser) return;
+      const chatId = getSupportChatId();
+      if (!supportMessages[chatId]) supportMessages[chatId] = [];
+      const message = { from: currentUser.id, nickname: currentUser.nickname, text, isAdmin: currentUser.isAdmin || false, timestamp: new Date().toISOString() };
+      supportMessages[chatId].push(message);
+      localStorage.setItem('pbank_support_chat', JSON.stringify(supportMessages));
+      input.value = '';
+      loadSupportChat();
+    }
+
+    document.addEventListener('DOMContentLoaded', updateUI);
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.user-info')) {
+        const dd = document.getElementById('userDropdown');
+        if (dd) dd.style.display = 'none';
+      }
+    });
+  function recoverPassword() {
+  const email = prompt("Введите email, к которому привязан аккаунт:");
+  if (!email) return;
+  const user = usersDB.find(u => u.email === email);
+  if (!user) {
+    alert("Пользователь с таким email не найден");
+    return;
+  }
+  alert(`Ваш пароль: ${user.password}`);
+}
+</script>
+</body>
+</html>
