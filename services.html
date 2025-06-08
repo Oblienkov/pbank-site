@@ -2,396 +2,210 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Услуги — П-Банк</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to bottom, #0a0a2a, #000000);
       color: white;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
     }
 
     header {
-      background-color: black;
-      padding: 20px 30px;
+      background: black;
+      padding: 20px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
     }
 
     header h1 a {
-      color: #ff5fa2;
       text-decoration: none;
+      color: #ff5fa2;
     }
 
     main {
       flex: 1;
       max-width: 900px;
-      margin: 40px auto;
+      margin: 30px auto;
       padding: 20px;
     }
 
-    h2 {
-      color: #ffa8d8;
-      text-align: center;
-      margin-bottom: 30px;
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
     }
 
     .service {
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       padding: 20px;
-      margin-bottom: 20px;
       border-radius: 16px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.4);
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
     }
 
-    .service img {
-      width: 48px;
-      height: 48px;
+    .service:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .service i {
+      font-size: 32px;
+      margin-bottom: 10px;
+      color: #ffa8d8;
     }
 
     .service h3 {
-      margin: 0 0 6px;
-      color: #fff;
+      margin: 0;
+      font-size: 18px;
     }
 
-    .service p {
-      margin: 0;
-      color: #ccc;
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: #1a1a2d;
+      padding: 30px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+    }
+
+    .modal-content input,
+    .modal-content select,
+    .modal-content button {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+    }
+
+    .modal-content button {
+      background: linear-gradient(to right, #ff5fa2, #ff80c1);
+      color: white;
+      font-weight: bold;
     }
 
     footer {
       text-align: center;
       padding: 20px;
-      background-color: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.8);
     }
-  
-    .emoji {
-      font-size: 36px;
-      width: 48px;
-      text-align: center;
-    }
-    </style>
-    
-
-  <script>
-    function openModal(id) {
-      document.getElementById(id).style.display = 'flex';
-    }
-    function closeModal(id) {
-      document.getElementById(id).style.display = 'none';
-    }
-    function sendTransfer() {
-      const target = document.getElementById("transferTo").value.trim();
-      const currency = document.getElementById("transferCurrency").value;
-      const amount = parseInt(document.getElementById("transferAmount").value);
-      const sender = JSON.parse(localStorage.getItem("pbank_currentUser"));
-      const users = JSON.parse(localStorage.getItem("pbank_users")) || [];
-      const senderData = users.find(u => u.email === sender.email);
-      const receiverData = users.find(u => u.nickname === target);
-      if (!receiverData) return alert("Игрок не найден");
-      if (!amount || amount <= 0) return alert("Некорректная сумма");
-      if ((senderData[currency] || 0) < amount) return alert("Недостаточно средств");
-      senderData[currency] -= amount;
-      receiverData[currency] = (receiverData[currency] || 0) + amount;
-      localStorage.setItem("pbank_users", JSON.stringify(users));
-      alert("Перевод успешно выполнен!");
-      closeModal('transferModal');
-    }
-  </script>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  </style>
 </head>
-
-
 <body>
   <header>
     <h1><a href="index.html">П-Банк</a></h1>
   </header>
 
   <main>
-    <h2>Наши услуги</h2>
-
-    <div class="service" onclick="openModal('topupModal')" style="cursor:pointer;">
-      <img src="d.png" alt="Алмаз">
-      <div>
-        <h3>Пополнение баланса</h3>
-        <p>Запишитесь на визит в П-Банк и пополните счёт с помощью внутриигровой валюты.</p>
-      </div>
-    </div>
-
-    <div class="service" onclick="openModal('transferModal')" style="cursor:pointer;">
-      <img src="nf.png" alt="Незерит">
-      <div>
-        <h3>Переводы между игроками</h3>
-        <p>Отправляйте валюту другим игрокам прямо через сайт.</p>
-      </div>
-    </div>
-
-    <div class="service" onclick="openModal('storageModal')" style="cursor:pointer;">
-      <img src="db.png" alt="Блок">
-      <div>
-        <h3>Хранение ценностей</h3>
-        <p>Надёжное место для хранения вашей игровой валюты и активов.</p>
-      </div>
-    </div>
-
-    <div class="service" onclick="openModal('bonusModal')" style="cursor:pointer;">
-      <img src="ng.png" alt="Кэшбэк">
-      <div>
-        <h3>Кэшбэк и бонусы</h3>
-        <p>Получайте бонусы и кэшбэк за активность и использование П-Банка.</p>
-      </div>
-    </div>
-  
-    <div class="service" onclick="openModal('loanModal')" style="cursor:pointer;">
-      <div class="emoji"><i class="fa-solid fa-bell"></i><i class="fa-solid fa-file-lines"></i><i class="fa-solid fa-arrows-rotate"></i><i class="fa-solid fa-credit-card"></i>💳</div><!--Кредит">
-      <div>
-        <h3>Кредитование</h3>
-        <p>Получите кредит в виде игровых ресурсов с возможностью возврата через сайт.</p>
-      </div>
-    </div>
-
-    <div class="service" onclick="openModal('exchangeModal')" style="cursor:pointer;">
-      <div class="emoji"><i class="fa-solid fa-bell"></i><i class="fa-solid fa-file-lines"></i><i class="fa-solid fa-arrows-rotate"></i><i class="fa-solid fa-credit-card"></i>🔄</div><!--Обмен">
-      <div>
-        <h3>Обмен валюты</h3>
-        <p>Обменивайте одни ресурсы на другие по текущему курсу П-Банка.</p>
-      </div>
-    </div>
-
-    <div class="service" onclick="openModal('historyModal')" style="cursor:pointer;">
-      <div class="emoji"><i class="fa-solid fa-bell"></i><i class="fa-solid fa-file-lines"></i><i class="fa-solid fa-arrows-rotate"></i><i class="fa-solid fa-credit-card"></i>📜</div><!--История">
-      <div>
-        <h3>История операций</h3>
-        <p>Просматривайте все действия: переводы, пополнения и списания прямо в личном кабинете.</p>
-      </div>
-    </div>
-
-    <div class="service" onclick="openModal('notifModal')" style="cursor:pointer;">
-      <div class="emoji"><i class="fa-solid fa-bell"></i><i class="fa-solid fa-file-lines"></i><i class="fa-solid fa-arrows-rotate"></i><i class="fa-solid fa-credit-card"></i>🔔</div><!--Уведомления">
-      <div>
-        <h3>Уведомления</h3>
-        <p>Получайте уведомления о переводах и действиях на ваш аккаунт.</p>
-      </div>
+    <h2 style="text-align:center;">Услуги банка</h2>
+    <div class="services-grid">
+      <div class="service" onclick="openModal('modalTopup')"><i class="fas fa-plus-circle"></i><h3>Пополнение</h3></div>
+      <div class="service" onclick="openModal('modalTransfer')"><i class="fas fa-exchange-alt"></i><h3>Перевод</h3></div>
+      <div class="service" onclick="openModal('modalStore')"><i class="fas fa-box"></i><h3>Хранение</h3></div>
+      <div class="service" onclick="openModal('modalBonus')"><i class="fas fa-gift"></i><h3>Бонусы</h3></div>
+      <div class="service" onclick="openModal('modalLoan')"><i class="fas fa-credit-card"></i><h3>Кредит</h3></div>
+      <div class="service" onclick="openModal('modalExchange')"><i class="fas fa-arrows-rotate"></i><h3>Обмен</h3></div>
+      <div class="service" onclick="openModal('modalHistory')"><i class="fas fa-file-alt"></i><h3>История</h3></div>
+      <div class="service" onclick="openModal('modalNotify')"><i class="fas fa-bell"></i><h3>Уведомления</h3></div>
     </div>
   </main>
 
-
   <footer>
-    &copy; 2025 П-Банк
+    © 2025 П-Банк
   </footer>
 
-  
-  <div id="topupModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">Пополнение баланса</h2>
-      
-      <p>Для пополнения баланса, пожалуйста, <a href="deposit.html" style="color:#ffa8d8;">запишитесь на визит</a> в банк.</p>
-    
-      <!--Пополнение баланса»</b>.</p>
-      <button onclick="closeModal('topupModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
+  <!-- Модальные окна -->
+  <div class="modal" id="modalTopup"><div class="modal-content"><h2>Пополнение</h2>
+    <p>Для пополнения, пожалуйста, <a href="deposit.html" style="color:#ffa8d8;">запишитесь на визит</a> в банк.</p>
+    <button onclick="closeModal('modalTopup')">Закрыть</button></div></div>
 
-  <div id="transferModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">Переводы между игроками</h2>
-      
-      <p>Для пополнения баланса, пожалуйста, <a href="deposit.html" style="color:#ffa8d8;">запишитесь на визит</a> в банк.</p>
-    
-      <!--Переводы между игроками»</b>.</p>
-      <button onclick="closeModal('transferModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
+  <div class="modal" id="modalTransfer"><div class="modal-content"><h2>Перевод игроку</h2>
+    <input id="toUser" placeholder="Ник получателя">
+    <select id="transferCurrency">
+      <option value="d">💎 Алмазы</option><option value="do">⛏️ Руда</option>
+      <option value="db">🔷 Блок</option><option value="ng">🔥 Обломок</option>
+      <option value="nf">⚔️ Слиток</option>
+    </select>
+    <input id="transferAmount" type="number" placeholder="Сумма">
+    <button onclick="sendTransfer()">Отправить</button>
+    <button onclick="closeModal('modalTransfer')">Закрыть</button></div></div>
 
-  <div id="storageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">Хранение ценностей</h2>
-      
-      <p>Для пополнения баланса, пожалуйста, <a href="deposit.html" style="color:#ffa8d8;">запишитесь на визит</a> в банк.</p>
-    
-      <!--Хранение ценностей»</b>.</p>
-      <button onclick="closeModal('storageModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
+  <div class="modal" id="modalStore"><div class="modal-content"><h2>Хранение</h2>
+    <p>Ваши ресурсы в надёжном месте! Система защищена и синхронизирована с сайтом.</p>
+    <button onclick="closeModal('modalStore')">Закрыть</button></div></div>
 
-  <div id="bonusModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">Кэшбэк и бонусы</h2>
-      
-      <p>Для пополнения баланса, пожалуйста, <a href="deposit.html" style="color:#ffa8d8;">запишитесь на визит</a> в банк.</p>
-    
-      <!--Кэшбэк и бонусы»</b>.</p>
-      <button onclick="closeModal('bonusModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
+  <div class="modal" id="modalBonus"><div class="modal-content"><h2>Бонусы</h2>
+    <p>Получайте бонусы за визиты и активность. Бонусы начисляются автоматически!</p>
+    <button onclick="closeModal('modalBonus')">Закрыть</button></div></div>
 
-  <div id="loanModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">Кредитование</h2>
-      
-      <p>Для пополнения баланса, пожалуйста, <a href="deposit.html" style="color:#ffa8d8;">запишитесь на визит</a> в банк.</p>
-    
-      <!--Кредитование»</b>.</p>
-      <button onclick="closeModal('loanModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
+  <div class="modal" id="modalLoan"><div class="modal-content"><h2>Кредит</h2>
+    <input type="number" placeholder="Сумма (алмазы)">
+    <button onclick="alert('Заявка отправлена!')">Оформить</button>
+    <button onclick="closeModal('modalLoan')">Закрыть</button></div></div>
 
-  <div id="exchangeModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">Обмен валюты</h2>
-      
-      <p>Для пополнения баланса, пожалуйста, <a href="deposit.html" style="color:#ffa8d8;">запишитесь на визит</a> в банк.</p>
-    
-      <!--Обмен валюты»</b>.</p>
-      <button onclick="closeModal('exchangeModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
+  <div class="modal" id="modalExchange"><div class="modal-content"><h2>Обмен</h2>
+    <select><option>Из: 💎 Алмазы</option><option>Из: 🔷 Блок</option></select>
+    <select><option>На: ⚔️ Слиток</option><option>На: 🔥 Обломок</option></select>
+    <input type="number" placeholder="Сумма для обмена">
+    <button onclick="alert('Обмен произведён')">Обменять</button>
+    <button onclick="closeModal('modalExchange')">Закрыть</button></div></div>
 
-  <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">История операций</h2>
-      
-      <p>Для пополнения баланса, пожалуйста, <a href="deposit.html" style="color:#ffa8d8;">запишитесь на визит</a> в банк.</p>
-    
-      <!--История операций»</b>.</p>
-      <button onclick="closeModal('historyModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
+  <div class="modal" id="modalHistory"><div class="modal-content"><h2>История</h2>
+    <p>Здесь будет отображаться история ваших операций (переводы, пополнения и пр.).</p>
+    <button onclick="closeModal('modalHistory')">Закрыть</button></div></div>
 
-  <div id="notifModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">Уведомления</h2>
-      
-      <p>Для пополнения баланса, пожалуйста, <a href="deposit.html" style="color:#ffa8d8;">запишитесь на визит</a> в банк.</p>
-    
-      <!--Уведомления»</b>.</p>
-      <button onclick="closeModal('notifModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
+  <div class="modal" id="modalNotify"><div class="modal-content"><h2>Уведомления</h2>
+    <p>Вы будете получать уведомления при каждом переводе и пополнении.</p>
+    <button onclick="closeModal('modalNotify')">Закрыть</button></div></div>
 
   <script>
     function openModal(id) {
-      document.getElementById(id).style.display = 'flex';
+      document.getElementById(id).style.display = "flex";
     }
     function closeModal(id) {
-      document.getElementById(id).style.display = 'none';
+      document.getElementById(id).style.display = "none";
+    }
+
+    function sendTransfer() {
+      const users = JSON.parse(localStorage.getItem("pbank_users")) || [];
+      const currentUser = JSON.parse(localStorage.getItem("pbank_currentUser"));
+      const sender = users.find(u => u.email === currentUser.email);
+      const receiver = users.find(u => u.nickname === document.getElementById("toUser").value.trim());
+      const currency = document.getElementById("transferCurrency").value;
+      const amount = parseInt(document.getElementById("transferAmount").value);
+      if (!receiver) return alert("Игрок не найден");
+      if (!amount || amount <= 0) return alert("Некорректная сумма");
+      if ((sender[currency] || 0) < amount) return alert("Недостаточно средств");
+      sender[currency] -= amount;
+      receiver[currency] = (receiver[currency] || 0) + amount;
+      localStorage.setItem("pbank_users", JSON.stringify(users));
+      alert("Перевод выполнен!");
+      closeModal('modalTransfer');
     }
   </script>
-
-<script>
-  function openModal(id) {
-    document.getElementById(id).style.display = 'flex';
-  }
-  function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
-  }
-  function sendTransfer() {
-    const target = document.getElementById("transferTo").value.trim();
-    const currency = document.getElementById("transferCurrency").value;
-    const amount = parseInt(document.getElementById("transferAmount").value);
-    const sender = JSON.parse(localStorage.getItem("pbank_currentUser"));
-    const users = JSON.parse(localStorage.getItem("pbank_users")) || [];
-    const senderData = users.find(u => u.email === sender.email);
-    const receiverData = users.find(u => u.nickname === target);
-    if (!receiverData) return alert("Игрок не найден");
-    if (!amount || amount <= 0) return alert("Некорректная сумма");
-    if ((senderData[currency] || 0) < amount) return alert("Недостаточно средств");
-    senderData[currency] -= amount;
-    receiverData[currency] = (receiverData[currency] || 0) + amount;
-    localStorage.setItem("pbank_users", JSON.stringify(users));
-    alert("Перевод успешно выполнен!");
-    closeModal('transferModal');
-  }
-</script>
-
-  <div id="topupModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">Topup</h2>
-      <p>Здесь появится интерфейс для: <b>topupModal</b>.</p>
-      <button onclick="closeModal('topupModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
-
-  <div id="transferModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">Transfer</h2>
-      <p>Здесь появится интерфейс для: <b>transferModal</b>.</p>
-      <button onclick="closeModal('transferModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
-
-  <div id="storageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">Storage</h2>
-      <p>Здесь появится интерфейс для: <b>storageModal</b>.</p>
-      <button onclick="closeModal('storageModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
-
-  <div id="bonusModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">Bonus</h2>
-      <p>Здесь появится интерфейс для: <b>bonusModal</b>.</p>
-      <button onclick="closeModal('bonusModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
-
-  <div id="loanModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">Loan</h2>
-      <p>Здесь появится интерфейс для: <b>loanModal</b>.</p>
-      <button onclick="closeModal('loanModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
-
-  <div id="exchangeModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">Exchange</h2>
-      <p>Здесь появится интерфейс для: <b>exchangeModal</b>.</p>
-      <button onclick="closeModal('exchangeModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
-
-  <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">History</h2>
-      <p>Здесь появится интерфейс для: <b>historyModal</b>.</p>
-      <button onclick="closeModal('historyModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
-
-  <div id="notifModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
-      <h2 style="margin-top:0;">Notif</h2>
-      <p>Здесь появится интерфейс для: <b>notifModal</b>.</p>
-      <button onclick="closeModal('notifModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
-    </div>
-  </div>
 </body>
 </html>
