@@ -91,7 +91,17 @@
 
   <main>
     <h2>Запись на визит</h2>
-    <form onsubmit="return saveVisit()">
+    
+<div id="playerInfo" style="margin-bottom: 30px;">
+  <h2 style="text-align:center;">Добро пожаловать, <span id='playerName'></span>!</h2>
+  <p style="text-align:center;">Здесь вы можете записаться на визит в П-Банк для пополнения баланса.</p>
+  <div style="text-align:center; margin-top: 20px;">
+    <h3>Ваш баланс:</h3>
+    <div id="playerBalance" style="font-size: 15px; line-height: 1.6;"></div>
+  </div>
+</div>
+
+<form onsubmit="return saveVisit()">
       <input type="datetime-local" id="visitDate" required />
       <input type="text" id="comment" placeholder="Комментарий (необязательно)" />
       <button type="submit">Записаться</button>
@@ -133,6 +143,20 @@
     if (admins.includes(currentUser.nickname)) {
       document.getElementById("adminPanel").style.display = "block";
       renderUsers();
+    function showPlayerInfo() {
+      if (!admins.includes(currentUser.nickname)) {
+        document.getElementById("playerName").textContent = currentUser.nickname;
+        let html = "";
+        ["d","do","db","ng","nf"].forEach(k => {
+          const value = currentUser[k] || 0;
+          html += "<img src='" + k + ".png' class='icon'> " + value + " ";
+        });
+        document.getElementById("playerBalance").innerHTML = html;
+      }
+    }
+
+    showPlayerInfo();
+
       renderVisits();
     }
 
@@ -156,6 +180,20 @@
       localStorage.setItem("pbank_users", JSON.stringify(users));
       alert("Баланс обновлён!");
       renderUsers();
+    function showPlayerInfo() {
+      if (!admins.includes(currentUser.nickname)) {
+        document.getElementById("playerName").textContent = currentUser.nickname;
+        let html = "";
+        ["d","do","db","ng","nf"].forEach(k => {
+          const value = currentUser[k] || 0;
+          html += "<img src='" + k + ".png' class='icon'> " + value + " ";
+        });
+        document.getElementById("playerBalance").innerHTML = html;
+      }
+    }
+
+    showPlayerInfo();
+
     }
 
     function renderUsers() {
