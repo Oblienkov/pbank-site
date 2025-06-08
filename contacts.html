@@ -62,6 +62,8 @@
     }
 
     .card {
+      animation: fadeIn 0.5s ease forwards;
+
       background: rgba(255, 255, 255, 0.08);
       padding: 22px;
       border-radius: 18px;
@@ -136,7 +138,39 @@
       padding: 20px;
       background-color: rgba(0,0,0,0.8);
     }
-  </style>
+  
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .balance {
+      font-size: 13px;
+      color: #aaa;
+      margin-top: 4px;
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #222;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s ease;
+      z-index: 9999;
+    }
+
+    #toast.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    </style>
+
 </head>
 <body>
   <header>
@@ -154,6 +188,7 @@
     <div class="no-users" id="noUsers" style="display:none;">Другие пользователи не найдены.</div>
   </main>
 
+  <div id="toast"></div>
   <footer>
     &copy; 2025 П-Банк
   </footer>
@@ -230,7 +265,21 @@
         input.placeholder = 'Введите сумму';
         card.appendChild(input);
 
+        
+        const balanceDisplay = document.createElement("div");
+        balanceDisplay.className = "balance";
+        const senderData = users.find(u => u.email === currentUser.email);
+        const balanceAmount = Number(senderData[select.value]) || 0;
+        balanceDisplay.textContent = "Баланс: " + balanceAmount;
+        card.appendChild(balanceDisplay);
+
+        select.addEventListener("change", function() {
+          const newBalance = Number(senderData[select.value]) || 0;
+          balanceDisplay.textContent = "Баланс: " + newBalance;
+        });
+
         const btn = document.createElement("button");
+
         btn.textContent = "Отправить";
         btn.onclick = function() {
           const amount = parseInt(input.value);
@@ -244,7 +293,11 @@
           
           
           const currentBalance = Number(users[senderIdx][currency]) || 0;
+          
+          if (!confirm("Вы уверены, что хотите отправить " + amount + " " + currency + "?")) return;
+
           if (currentBalance < amount) {
+
 
 
             alert("Недостаточно средств");
@@ -257,7 +310,7 @@
           localStorage.setItem("pbank_users", JSON.stringify(users));
           localStorage.setItem("pbank_currentUser", JSON.stringify(users[senderIdx]));
 
-          alert("Перевод выполнен!");
+          showToast("✅ Перевод выполнен!");
         };
 
         card.appendChild(btn);
@@ -265,7 +318,16 @@
       });
     }
 
+    
+    function showToast(text) {
+      const toast = document.getElementById("toast");
+      toast.textContent = text;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2500);
+    }
+
     renderUsers();
+
   </script>
 </body>
 </html>
