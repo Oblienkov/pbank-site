@@ -242,7 +242,10 @@
           if (!amount || amount <= 0) return alert("Введите корректное количество");
 
           
-          if (!users[senderIdx][currency] || users[senderIdx][currency] < amount) {
+          
+          const currentBalance = Number(users[senderIdx][currency]) || 0;
+          if (currentBalance < amount) {
+
 
             alert("Недостаточно средств");
             return;
