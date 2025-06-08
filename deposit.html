@@ -7,6 +7,9 @@
   <title>Пополнение — П-Банк</title>
   <style>
     body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to bottom, #0a0a2a, #000000);
@@ -114,8 +117,7 @@
       <div id="visitList"></div>
     </div>
   </main>
-
-  <footer>© 2025 П-Банк</footer>
+  <footer style='margin-top: auto;'>© 2025 П-Банк</footer>
 
   <script>
     const currentUser = JSON.parse(localStorage.getItem("pbank_currentUser"));
