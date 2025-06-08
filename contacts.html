@@ -143,44 +143,29 @@
   </footer>
 
   <script>
-    
     let currentUser = JSON.parse(localStorage.getItem('pbank_currentUser'));
     if (!currentUser || !currentUser.email) {
       alert("Вы не авторизованы!");
       window.location.href = 'index.html';
     }
-    
-    if (!currentUser) {
-      alert("Вы не авторизованы!");
-      window.location.href = 'index.html';
-    }
 
-    
     let users = [];
-
     try {
       users = JSON.parse(localStorage.getItem('pbank_users')) || [];
       if (!Array.isArray(users)) users = [];
     } catch (e) {
       users = [];
     }
-    
 
     function logout() {
       localStorage.removeItem('pbank_currentUser');
       window.location.href = 'index.html';
     }
 
-    
     function renderUsers() {
-      users = JSON.parse(localStorage.getItem('pbank_users')) || [];
-      currentUser = JSON.parse(localStorage.getItem('pbank_currentUser'));
-      console.log("Loaded users:", users);
-      console.log("Current user:", currentUser);
-    
       const container = document.getElementById("userList");
       const emptyMsg = document.getElementById("noUsers");
-      container.innerHTML = '';
+      container.innerHTML = "";
 
       const others = users.filter(u => u.email !== currentUser.email);
       if (others.length === 0) {
@@ -190,54 +175,73 @@
 
       emptyMsg.style.display = "none";
 
-      others.forEach(user => {
-        const div = document.createElement("div");
-        div.className = "card";
+      others.forEach(function(user) {
+        const card = document.createElement("div");
+        card.className = "card";
 
-        div.innerHTML = \`
-          <img src="https://mc-heads.net/avatar/\${user.nickname}/80" />
-          <h3>\${user.nickname}</h3>
-          <small>\${user.email}</small>
-          <select class="currency">
-            <option value="d">Алмазы</option>
-            <option value="do">Алмазная руда</option>
-            <option value="db">Алмазные блоки</option>
-            <option value="ng">Незеритовые обломки</option>
-            <option value="nf">Незеритовые слитки</option>
-          </select>
-          <input type="number" placeholder="Сколько?" min="1" class="amount">
-          <button onclick="send(this, '\${user.email}')">Отправить</button>
-        \`;
+        const avatar = document.createElement("img");
+        avatar.src = "https://mc-heads.net/avatar/" + user.nickname + "/80";
+        card.appendChild(avatar);
 
-        container.appendChild(div);
+        const name = document.createElement("h3");
+        name.textContent = user.nickname;
+        card.appendChild(name);
+
+        const email = document.createElement("small");
+        email.textContent = user.email;
+        card.appendChild(email);
+
+        const select = document.createElement("select");
+        select.className = "currency";
+        ["d", "do", "db", "ng", "nf"].forEach(code => {
+          const option = document.createElement("option");
+          option.value = code;
+          option.textContent = {
+            d: "Алмазы",
+            do: "Алмазная руда",
+            db: "Алмазные блоки",
+            ng: "Незеритовые обломки",
+            nf: "Незеритовые слитки"
+          }[code];
+          select.appendChild(option);
+        });
+        card.appendChild(select);
+
+        const input = document.createElement("input");
+        input.className = "amount";
+        input.type = "number";
+        input.min = "1";
+        input.placeholder = "Сколько?";
+        card.appendChild(input);
+
+        const btn = document.createElement("button");
+        btn.textContent = "Отправить";
+        btn.onclick = function() {
+          const amount = parseInt(input.value);
+          const currency = select.value;
+
+          const senderIdx = users.findIndex(u => u.email === currentUser.email);
+          const receiverIdx = users.findIndex(u => u.email === user.email);
+
+          if (!amount || amount <= 0) return alert("Введите корректное количество");
+
+          if (users[senderIdx][currency] < amount) {
+            alert("Недостаточно средств");
+            return;
+          }
+
+          users[senderIdx][currency] -= amount;
+          users[receiverIdx][currency] = (users[receiverIdx][currency] || 0) + amount;
+
+          localStorage.setItem("pbank_users", JSON.stringify(users));
+          localStorage.setItem("pbank_currentUser", JSON.stringify(users[senderIdx]));
+
+          alert("Перевод выполнен!");
+        };
+
+        card.appendChild(btn);
+        container.appendChild(card);
       });
-    }
-
-    function send(button, toEmail) {
-      const card = button.closest(".card");
-      const amount = parseInt(card.querySelector(".amount").value);
-      const currency = card.querySelector(".currency").value;
-
-      if (!amount || amount <= 0) return alert("Введите корректное количество");
-
-      const fromIdx = users.findIndex(u => u.email === currentUser.email);
-      const toIdx = users.findIndex(u => u.email === toEmail);
-
-      if (users[fromIdx][currency] < amount) {
-        alert("Недостаточно средств");
-        return;
-      }
-
-      users[fromIdx][currency] -= amount;
-      users[toIdx][currency] = (users[toIdx][currency] || 0) + amount;
-
-      localStorage.setItem('pbank_users', JSON.stringify(users));
-      localStorage.setItem('pbank_currentUser', JSON.stringify(users[fromIdx]));
-
-      alert("Перевод выполнен!");
-
-      // обновляем память
-      users = JSON.parse(localStorage.getItem('pbank_users')) || [];
     }
 
     renderUsers();
