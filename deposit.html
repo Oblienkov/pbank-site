@@ -406,7 +406,7 @@
       let users = JSON.parse(localStorage.getItem("pbank_users")) || [];
       let csv = "Ник,Email,d,do,db,ng,nf\n";
       users.forEach(u => {
-        csv += `${u.nickname},${u.email},${u.d||0},${u.do||0},${u.db||0},${u.ng||0},${u.nf||0}\n`;
+        csv += u.nickname + "," + u.email + "," + (u.d||0) + "," + (u.do||0) + "," + (u.db||0) + "," + (u.ng||0) + "," + (u.nf||0) + "\r\n";
       });
       downloadCSV(csv, "users.csv");
     }
@@ -415,7 +415,7 @@
       let visits = JSON.parse(localStorage.getItem("pbank_visits")) || [];
       let csv = "Ник,Дата,Комментарий\n";
       visits.forEach(v => {
-        csv += `${v.nick},${v.date},${v.comment||""}\n`;
+        csv += v.nick + "," + v.date + "," + (v.comment || "") + "\r\n";
       });
       downloadCSV(csv, "visits.csv");
     }
