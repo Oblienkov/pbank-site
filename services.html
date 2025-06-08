@@ -74,7 +74,34 @@
       background-color: rgba(0,0,0,0.8);
     }
   </style>
+
+  <script>
+    function openModal(id) {
+      document.getElementById(id).style.display = 'flex';
+    }
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+    function sendTransfer() {
+      const target = document.getElementById("transferTo").value.trim();
+      const currency = document.getElementById("transferCurrency").value;
+      const amount = parseInt(document.getElementById("transferAmount").value);
+      const sender = JSON.parse(localStorage.getItem("pbank_currentUser"));
+      const users = JSON.parse(localStorage.getItem("pbank_users")) || [];
+      const senderData = users.find(u => u.email === sender.email);
+      const receiverData = users.find(u => u.nickname === target);
+      if (!receiverData) return alert("Игрок не найден");
+      if (!amount || amount <= 0) return alert("Некорректная сумма");
+      if ((senderData[currency] || 0) < amount) return alert("Недостаточно средств");
+      senderData[currency] -= amount;
+      receiverData[currency] = (receiverData[currency] || 0) + amount;
+      localStorage.setItem("pbank_users", JSON.stringify(users));
+      alert("Перевод успешно выполнен!");
+      closeModal('transferModal');
+    }
+  </script>
 </head>
+
 <body>
   <header>
     <h1><a href="index.html">П-Банк</a></h1>
@@ -116,7 +143,7 @@
     </div>
   
     <div class="service" onclick="openModal('loanModal')" style="cursor:pointer;">
-      <img src="loan.png" alt="Кредит">
+      <div style="font-size: 36px;">💳</div><!-- emoji: Кредит">
       <div>
         <h3>Кредитование</h3>
         <p>Получите кредит в виде игровых ресурсов с возможностью возврата через сайт.</p>
@@ -124,7 +151,7 @@
     </div>
 
     <div class="service" onclick="openModal('exchangeModal')" style="cursor:pointer;">
-      <img src="exchange.png" alt="Обмен">
+      <div style="font-size: 36px;">🔄</div><!-- emoji: Обмен">
       <div>
         <h3>Обмен валюты</h3>
         <p>Обменивайте одни ресурсы на другие по текущему курсу П-Банка.</p>
@@ -132,7 +159,7 @@
     </div>
 
     <div class="service" onclick="openModal('historyModal')" style="cursor:pointer;">
-      <img src="history.png" alt="История">
+      <div style="font-size: 36px;">📜</div><!-- emoji: История">
       <div>
         <h3>История операций</h3>
         <p>Просматривайте все действия: переводы, пополнения и списания прямо в личном кабинете.</p>
@@ -140,7 +167,7 @@
     </div>
 
     <div class="service" onclick="openModal('notifModal')" style="cursor:pointer;">
-      <img src="notif.png" alt="Уведомления">
+      <div style="font-size: 36px;">🔔</div><!-- emoji: Уведомления">
       <div>
         <h3>Уведомления</h3>
         <p>Получайте уведомления о переводах и действиях на ваш аккаунт.</p>
