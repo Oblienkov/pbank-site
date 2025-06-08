@@ -150,6 +150,8 @@
     <h2>Перевод</h2>
     <input id="toUser" placeholder="Кому (ник)">
     <select id="currency">
+<option value="ng">🔥 Обломок</option>
+<option value="nf">⚔️ Слиток</option>
       <option value="d">💎 Алмазы</option>
       <option value="do">⛏️ Руда</option>
       <option value="db">🔷 Блок</option>
@@ -164,10 +166,14 @@
   <div class="modal-content">
     <h2>Обмен валюты</h2>
     <select id="fromCurrency">
+<option value="ng">🔥 Обломок</option>
+<option value="nf">⚔️ Слиток</option>
       <option value="d">💎 Алмазы</option>
       <option value="db">🔷 Блоки</option>
     </select>
     <select id="toCurrency">
+<option value="ng">🔥 Обломок</option>
+<option value="nf">⚔️ Слиток</option>
       <option value="db">🔷 Блоки</option>
       <option value="d">💎 Алмазы</option>
     </select>
@@ -240,7 +246,7 @@ function exchange() {
   let users = JSON.parse(localStorage.getItem("pbank_users")) || [];
   let current = JSON.parse(localStorage.getItem("pbank_currentUser"));
   let user = users.find(u => u.email === current.email);
-  let rates = { "d_db": 9, "db_d": 1/9 };
+  let rates = { "d_db": 9, "db_d": 1/9, "d_nf": 24, "nf_d": 1/24, "d_ng": 6, "ng_d": 1/6 };
 
   let key = from + "_" + to;
   if (!rates[key]) return alert("Обмен недоступен");
