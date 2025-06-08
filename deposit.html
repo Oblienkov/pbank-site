@@ -301,7 +301,7 @@
       const div = document.getElementById("userList");
       div.innerHTML = users.map(u => {
         return "<div style='margin-bottom: 10px'>🧍 " + u.nickname + " (" + u.email + ")<br>💠 d: " + (u.d || 0) + ", do: " + (u.do || 0) + ", db: " + (u.db || 0) + ", ng: " + (u.ng || 0) + ", nf: " + (u.nf || 0) +
-        " <button onclick='removeUser("" + u.email + "")' style='margin-left:10px;'>Удалить</button></div>";
+        " <button onclick='removeUser(\""+u.email+"\")' style='margin-left:10px;'>Удалить</button></div>";
       }).join("");
     }
     function removeUser(email) {
