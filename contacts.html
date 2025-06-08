@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Контакты — П-Банк</title>
+  <style>
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #0a0a2a, #000000);
+      color: #fff;
+    }
+
+    header {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left a {
+      font-size: 24px;
+      color: #ff5fa2;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .header-right button {
+      background: linear-gradient(to right, #ff5fa2, #ff80c1);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    main {
+      padding: 40px 20px 80px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #ffa8d8;
+      margin-bottom: 40px;
+    }
+
+    .user-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .user-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+
+    .user-card img {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      image-rendering: pixelated;
+    }
+
+    .user-card h3 {
+      margin: 10px 0;
+    }
+
+    .user-card select, .user-card input, .user-card button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .user-card select, .user-card input {
+      background: #111;
+      color: #fff;
+    }
+
+    .user-card button {
+      background: linear-gradient(to right, #ff5fa2, #ff80c1);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: rgba(0,0,0,0.8);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <a href="index.html">П-Банк</a>
+    </div>
+    <div class="header-right">
+      <button onclick="logout()">Выйти</button>
+    </div>
+  </header>
+
+  <main>
+    <h1>Контакты</h1>
+    <div class="user-grid" id="userGrid"></div>
+  </main>
+
+  <footer>
+    &copy; 2025 П-Банк
+  </footer>
+
+  <script>
+    const currentUser = JSON.parse(localStorage.getItem('pbank_currentUser'));
+    if (!currentUser) {
+      alert("Вы не авторизованы!");
+      window.location.href = 'index.html';
+    }
+
+    const users = JSON.parse(localStorage.getItem('pbank_users')) || [];
+
+    function logout() {
+      localStorage.removeItem('pbank_currentUser');
+      window.location.href = 'index.html';
+    }
+
+    function renderUsers() {
+      const grid = document.getElementById("userGrid");
+      grid.innerHTML = '';
+
+      users.filter(u => u.email !== currentUser.email).forEach(user => {
+        const card = document.createElement('div');
+        card.className = "user-card";
+
+        card.innerHTML = \`
+          <img src="https://mc-heads.net/avatar/\${user.nickname}/64" alt="Скин">
+          <h3>\${user.nickname}</h3>
+          <select class="currency">
+            <option value="d">Алмазы</option>
+            <option value="do">Алмазная руда</option>
+            <option value="db">Алмазные блоки</option>
+            <option value="ng">Незеритовые обломки</option>
+            <option value="nf">Незеритовые слитки</option>
+          </select>
+          <input type="number" min="1" placeholder="Количество" class="amount">
+          <button onclick="send(this, '\${user.email}')">Отправить</button>
+        \`;
+
+        grid.appendChild(card);
+      });
+    }
+
+    function send(button, toEmail) {
+      const card = button.parentElement;
+      const amount = parseInt(card.querySelector('.amount').value);
+      const currency = card.querySelector('.currency').value;
+
+      if (!amount || amount <= 0) return alert("Введите корректное количество");
+
+      const senderIndex = users.findIndex(u => u.email === currentUser.email);
+      const receiverIndex = users.findIndex(u => u.email === toEmail);
+
+      if (users[senderIndex][currency] < amount) {
+        alert("Недостаточно средств");
+        return;
+      }
+
+      users[senderIndex][currency] -= amount;
+      users[receiverIndex][currency] = (users[receiverIndex][currency] || 0) + amount;
+
+      localStorage.setItem('pbank_users', JSON.stringify(users));
+      localStorage.setItem('pbank_currentUser', JSON.stringify(users[senderIndex]));
+      alert("Перевод выполнен!");
+    }
+
+    renderUsers();
+  </script>
+</body>
+</html>
