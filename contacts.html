@@ -12,10 +12,12 @@
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to bottom, #0a0a2a, #000000);
       color: #fff;
+      display: flex;
+      flex-direction: column;
     }
 
     header {
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.85);
       padding: 20px 30px;
       display: flex;
       justify-content: space-between;
@@ -40,57 +42,67 @@
     }
 
     main {
+      flex: 1;
       padding: 40px 20px 80px;
-      max-width: 1000px;
+      max-width: 1200px;
       margin: 0 auto;
     }
 
     h1 {
       text-align: center;
+      font-size: 32px;
       color: #ffa8d8;
       margin-bottom: 40px;
     }
 
-    .user-grid {
+    .user-list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
     }
 
-    .user-card {
-      background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 15px;
+    .card {
+      background: rgba(255, 255, 255, 0.05);
       padding: 20px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      border-radius: 16px;
       text-align: center;
+      box-shadow: 0 0 16px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .user-card img {
-      width: 64px;
-      height: 64px;
-      border-radius: 8px;
+    .card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
       image-rendering: pixelated;
     }
 
-    .user-card h3 {
-      margin: 10px 0;
+    .card h3 {
+      margin: 12px 0 4px;
+      color: #ffd0e6;
     }
 
-    .user-card select, .user-card input, .user-card button {
+    .card small {
+      color: #aaa;
+    }
+
+    .card select, .card input, .card button {
+      margin-top: 10px;
       width: 100%;
       padding: 10px;
-      margin-top: 10px;
       border: none;
       border-radius: 8px;
       font-size: 14px;
     }
 
-    .user-card select, .user-card input {
+    .card select, .card input {
       background: #111;
-      color: #fff;
+      color: white;
     }
 
-    .user-card button {
+    .card button {
       background: linear-gradient(to right, #ff5fa2, #ff80c1);
       color: white;
       font-weight: bold;
@@ -115,8 +127,8 @@
   </header>
 
   <main>
-    <h1>Контакты</h1>
-    <div class="user-grid" id="userGrid"></div>
+    <h1>Отправка валюты игрокам</h1>
+    <div class="user-list" id="userList"></div>
   </main>
 
   <footer>
@@ -138,16 +150,17 @@
     }
 
     function renderUsers() {
-      const grid = document.getElementById("userGrid");
-      grid.innerHTML = '';
+      const container = document.getElementById("userList");
+      container.innerHTML = '';
 
       users.filter(u => u.email !== currentUser.email).forEach(user => {
-        const card = document.createElement('div');
-        card.className = "user-card";
+        const div = document.createElement("div");
+        div.className = "card";
 
-        card.innerHTML = \`
-          <img src="https://mc-heads.net/avatar/\${user.nickname}/64" alt="Скин">
+        div.innerHTML = \`
+          <img src="https://mc-heads.net/avatar/\${user.nickname}/80" />
           <h3>\${user.nickname}</h3>
+          <small>\${user.email}</small>
           <select class="currency">
             <option value="d">Алмазы</option>
             <option value="do">Алмазная руда</option>
@@ -155,34 +168,35 @@
             <option value="ng">Незеритовые обломки</option>
             <option value="nf">Незеритовые слитки</option>
           </select>
-          <input type="number" min="1" placeholder="Количество" class="amount">
+          <input type="number" placeholder="Сколько?" min="1" class="amount">
           <button onclick="send(this, '\${user.email}')">Отправить</button>
         \`;
 
-        grid.appendChild(card);
+        container.appendChild(div);
       });
     }
 
     function send(button, toEmail) {
-      const card = button.parentElement;
-      const amount = parseInt(card.querySelector('.amount').value);
-      const currency = card.querySelector('.currency').value;
+      const card = button.closest(".card");
+      const amount = parseInt(card.querySelector(".amount").value);
+      const currency = card.querySelector(".currency").value;
 
       if (!amount || amount <= 0) return alert("Введите корректное количество");
 
-      const senderIndex = users.findIndex(u => u.email === currentUser.email);
-      const receiverIndex = users.findIndex(u => u.email === toEmail);
+      const fromIdx = users.findIndex(u => u.email === currentUser.email);
+      const toIdx = users.findIndex(u => u.email === toEmail);
 
-      if (users[senderIndex][currency] < amount) {
+      if (users[fromIdx][currency] < amount) {
         alert("Недостаточно средств");
         return;
       }
 
-      users[senderIndex][currency] -= amount;
-      users[receiverIndex][currency] = (users[receiverIndex][currency] || 0) + amount;
+      users[fromIdx][currency] -= amount;
+      users[toIdx][currency] = (users[toIdx][currency] || 0) + amount;
 
       localStorage.setItem('pbank_users', JSON.stringify(users));
-      localStorage.setItem('pbank_currentUser', JSON.stringify(users[senderIndex]));
+      localStorage.setItem('pbank_currentUser', JSON.stringify(users[fromIdx]));
+
       alert("Перевод выполнен!");
     }
 
