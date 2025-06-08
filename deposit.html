@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Пополнение — П-Банк</title>
+  <style>
+    html, body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #0a0a2a, #000000);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: rgba(0, 0, 0, 0.85);
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left a {
+      font-size: 24px;
+      color: #ff5fa2;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .header-right button {
+      background: linear-gradient(to right, #ff5fa2, #ff80c1);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    main {
+      flex: 1;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+
+    h1 {
+      text-align: center;
+      color: #ffa8d8;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+
+    input, select {
+      background-color: #111;
+      color: white;
+    }
+
+    button {
+      background: linear-gradient(to right, #ff5fa2, #ff80c1);
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+    }
+
+    #adminPanel {
+      display: none;
+      margin-top: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    #adminPanel h2 {
+      color: #ffb2d6;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: rgba(0,0,0,0.8);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <a href="index.html">П-Банк</a>
+    </div>
+    <div class="header-right">
+      <button onclick="logout()">Выйти</button>
+    </div>
+  </header>
+
+  <main>
+    <h1>Запись на визит</h1>
+    <form onsubmit="return saveVisit()">
+      <label for="visitDate">Выберите дату и время:</label>
+      <input type="datetime-local" id="visitDate" required />
+
+      <label for="comment">Комментарий:</label>
+      <input type="text" id="comment" placeholder="Например: Хочу пополнить счёт" />
+
+      <button type="submit">Записаться</button>
+    </form>
+
+    <div id="adminPanel">
+      <h2>Админ-панель</h2>
+      <label for="targetNick">Ник игрока:</label>
+      <input type="text" id="targetNick" placeholder="Игровой ник">
+
+      <label for="currency">Валюта:</label>
+      <select id="currency">
+        <option value="d">Алмазы</option>
+        <option value="do">Алмазная руда</option>
+        <option value="db">Алмазные блоки</option>
+        <option value="ng">Незеритовые обломки</option>
+        <option value="nf">Незеритовые слитки</option>
+      </select>
+
+      <label for="amount">Сколько добавить:</label>
+      <input type="number" id="amount" placeholder="Число" min="1" />
+
+      <button onclick="addBalance()">Пополнить</button>
+    
+    <div id="adminPanel" style="margin-top:40px; display:none;">
+      <h2>Админ-панель</h2>
+
+      <label for="targetNick">Ник игрока:</label>
+      <input type="text" id="targetNick" placeholder="Игровой ник">
+
+      <label for="currency">Валюта:</label>
+      <select id="currency">
+        <option value="d">Алмазы</option>
+        <option value="do">Алмазная руда</option>
+        <option value="db">Алмазные блоки</option>
+        <option value="ng">Незеритовые обломки</option>
+        <option value="nf">Незеритовые слитки</option>
+      </select>
+
+      <label for="amount">Сколько добавить:</label>
+      <input type="number" id="amount" placeholder="Число" min="1" />
+
+      <button onclick="addBalance()">Пополнить</button>
+
+      <hr style="margin: 30px 0; border-color: #555">
+
+      <h3>Добавить администратора</h3>
+      <input type="text" id="newAdmin" placeholder="Ник нового админа" />
+      <button onclick="addAdmin()">Добавить админа</button>
+    </div>
+  </main>
+
+
+  <footer>
+    &copy; 2025 П-Банк
+  </footer>
+
+  <script>
+    let currentUser = JSON.parse(localStorage.getItem('pbank_currentUser'));
+    if (!currentUser || !currentUser.email) {
+      alert("Вы не авторизованы!");
+      window.location.href = "index.html";
+    }
+
+    function logout() {
+      localStorage.removeItem('pbank_currentUser');
+      window.location.href = "index.html";
+    }
+
+    function saveVisit() {
+      const date = document.getElementById("visitDate").value;
+      const comment = document.getElementById("comment").value;
+      alert("Вы записаны на визит: " + date + (comment ? "\nКомментарий: " + comment : ""));
+      return false;
+    }
+
+    
+    function addAdmin() {
+      const newNick = document.getElementById("newAdmin").value.trim();
+      if (!newNick) return alert("Введите ник");
+      if (allowedAdmins.includes(newNick)) return alert("Игрок уже админ");
+
+      allowedAdmins.push(newNick);
+      localStorage.setItem("pbank_admins", JSON.stringify(allowedAdmins));
+      alert("✅ Админ добавлен: " + newNick);
+    }
+
+    function addBalance() {
+
+      const nick = document.getElementById("targetNick").value.trim();
+      const currency = document.getElementById("currency").value;
+      const amount = parseInt(document.getElementById("amount").value);
+
+      let users = JSON.parse(localStorage.getItem("pbank_users")) || [];
+      const target = users.find(u => u.nickname === nick);
+
+      if (!target) return alert("Пользователь не найден");
+      if (!amount || amount <= 0) return alert("Некорректная сумма");
+
+      target[currency] = (target[currency] || 0) + amount;
+      localStorage.setItem("pbank_users", JSON.stringify(users));
+      alert("Баланс игрока обновлён");
+    }
+
+    // ADMIN PANEL UNLOCK LOGIC
+    
+    const sequence = ['a','d','m','i','n','p','a','n','e','l'];
+    let allowedAdmins = ['B1gTorch', 'FlouD_'];
+
+    try {
+      const stored = JSON.parse(localStorage.getItem('pbank_admins'));
+      if (Array.isArray(stored)) allowedAdmins = stored;
+    } catch {}
+    
+    let inputIndex = 0;
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key.toLowerCase() === sequence[inputIndex]) {
+        inputIndex++;
+        
+        if (inputIndex === sequence.length) {
+          if (!allowedAdmins.includes(currentUser.nickname)) {
+            alert("⛔ У вас нет доступа к админ-панели");
+            inputIndex = 0;
+            return;
+          }
+
+          document.getElementById("adminPanel").style.display = "block";
+          alert("✅ Админ-панель активирована");
+          inputIndex = 0;
+        }
+      } else {
+        inputIndex = 0;
+      }
+    });
+  </script>
+</body>
+</html>
