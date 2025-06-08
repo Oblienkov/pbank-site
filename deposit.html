@@ -102,7 +102,43 @@
       padding: 20px;
       background-color: rgba(0,0,0,0.8);
     }
-  </style>
+  
+    .tab-content button {
+      margin-top: 10px;
+    }
+    .tab-content {
+      margin-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 15px;
+    }
+    
+    button {
+      background: linear-gradient(to right, #ff5fa2, #ff80c1);
+      color: white;
+      padding: 10px 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(to right, #ff80c1, #ff5fa2);
+    }
+
+    .fade-in {
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    </style>
+
+
 </head>
 <body>
   <header>
@@ -145,7 +181,67 @@
 
       <button onclick="addBalance()">Пополнить</button>
     
+    
     <div id="adminPanel" style="margin-top:40px; display:none;">
+      <h2>Админ-панель</h2>
+      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button onclick="showTab('tab-funds')">💰 Баланс</button>
+        <button onclick="showTab('tab-admins')">👑 Админы</button>
+        <button onclick="showTab('tab-users')">👥 Пользователи</button>
+        <button onclick="showTab('tab-visits')">📅 Визиты</button>
+      </div>
+
+      <div id="tab-funds" class="tab-content">
+        <label for="targetNick">Ник игрока:</label>
+        <input type="text" id="targetNick" placeholder="Игровой ник">
+
+        <label for="currency">Валюта:</label>
+        <select id="currency">
+          <option value="d">Алмазы</option>
+          <option value="do">Алмазная руда</option>
+          <option value="db">Алмазные блоки</option>
+          <option value="ng">Незеритовые обломки</option>
+          <option value="nf">Незеритовые слитки</option>
+        </select>
+
+        <label for="amount">Сколько добавить:</label>
+        <input type="number" id="amount" placeholder="Число" min="1" />
+
+        <button onclick="addBalance()">Пополнить</button>
+      </div>
+
+      <div id="tab-admins" class="tab-content" style="display:none;">
+        <h3>Добавить администратора</h3>
+        <input type="text" id="newAdmin" placeholder="Ник нового админа" />
+        <button onclick="addAdmin()">Добавить админа</button>
+        <div id="adminList" style="margin-top:10px; font-size: 14px; color: #ccc;"></div>
+      </div>
+
+      
+    <div id="tab-users" class="tab-content" style="display:none;">
+      <h3>Пользователи</h3>
+      <input type="text" id="searchUser" placeholder="Поиск по нику..." oninput="renderUsers()" style="width: 100%; padding: 8px; background:#111; color:#fff; border-radius:8px;">
+      <div style="margin: 10px 0;">
+        <button onclick="sortUsers()">Сортировать по нику</button>
+        <button onclick="exportUsers()">📁 Экспорт в Excel</button>
+      </div>
+      <div id="userList" style="font-size:14px; color:#ddd;"></div>
+    
+        <h3>Пользователи</h3>
+        <div id="userList" style="font-size:14px; color:#ddd;"></div>
+      </div>
+
+      
+    <div id="tab-visits" class="tab-content" style="display:none;">
+      <h3>Записи на визит</h3>
+      <button onclick="exportVisits()">📁 Экспорт визитов</button>
+      <div id="visitList" style="font-size:14px; color:#ccc; margin-top:10px;"></div>
+    
+        <h3>Записи на визит</h3>
+        <div id="visitList" style="font-size:14px; color:#ccc;"></div>
+      </div>
+    </div>
+
       <h2>Админ-панель</h2>
 
       <label for="targetNick">Ник игрока:</label>
@@ -256,6 +352,129 @@
         inputIndex = 0;
       }
     });
-  </script>
+  
+    function showTab(id) {
+      document.querySelectorAll(".tab-content").forEach(tab => {
+        tab.style.display = "none";
+      });
+      document.getElementById(id).style.display = "block";
+
+      if (id === "tab-admins") renderAdmins();
+      if (id === "tab-users") renderUsers();
+      if (id === "tab-visits") renderVisits();
+    }
+
+    function renderAdmins() {
+      const list = document.getElementById("adminList");
+      list.innerHTML = "<b>Текущие админы:</b><br>" + allowedAdmins.map(a => "• " + a).join("<br>");
+    }
+
+    function renderUsers() {
+      let users = JSON.parse(localStorage.getItem("pbank_users")) || [];
+      const div = document.getElementById("userList");
+      div.innerHTML = users.map(u => {
+        return "<div style='margin-bottom: 10px'>🧍 " + u.nickname + " (" + u.email + ")<br>💠 d: " + (u.d || 0) + ", do: " + (u.do || 0) + ", db: " + (u.db || 0) + ", ng: " + (u.ng || 0) + ", nf: " + (u.nf || 0) +
+        " <button onclick='removeUser("" + u.email + "")' style='margin-left:10px;'>Удалить</button></div>";
+      }).join("");
+    }
+
+    function removeUser(email) {
+      let users = JSON.parse(localStorage.getItem("pbank_users")) || [];
+      users = users.filter(u => u.email !== email);
+      localStorage.setItem("pbank_users", JSON.stringify(users));
+      alert("Пользователь удалён");
+      renderUsers();
+    }
+
+    function renderVisits() {
+      let visits = JSON.parse(localStorage.getItem("pbank_visits")) || [];
+      const list = document.getElementById("visitList");
+      if (visits.length === 0) {
+        list.textContent = "Нет записей.";
+        return;
+      }
+      list.innerHTML = visits.map(v => "🕒 " + v.date + " — " + v.nick + (v.comment ? " (" + v.comment + ")" : "")).join("<br>");
+    }
+
+    
+    function sortUsers() {
+      window._sortUsersByName = true;
+      renderUsers();
+    }
+
+    function exportUsers() {
+      let users = JSON.parse(localStorage.getItem("pbank_users")) || [];
+      let csv = "Ник,Email,d,do,db,ng,nf\n";
+      users.forEach(u => {
+        csv += `${u.nickname},${u.email},${u.d||0},${u.do||0},${u.db||0},${u.ng||0},${u.nf||0}\n`;
+      });
+      downloadCSV(csv, "users.csv");
+    }
+
+    function exportVisits() {
+      let visits = JSON.parse(localStorage.getItem("pbank_visits")) || [];
+      let csv = "Ник,Дата,Комментарий\n";
+      visits.forEach(v => {
+        csv += `${v.nick},${v.date},${v.comment||""}\n`;
+      });
+      downloadCSV(csv, "visits.csv");
+    }
+
+    function downloadCSV(data, filename) {
+      const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function renderUsers() {
+      let users = JSON.parse(localStorage.getItem("pbank_users")) || [];
+      const search = document.getElementById("searchUser").value.toLowerCase();
+      if (window._sortUsersByName) {
+        users.sort((a, b) => a.nickname.localeCompare(b.nickname));
+      }
+      if (search) {
+        users = users.filter(u => u.nickname.toLowerCase().includes(search));
+      }
+
+      const div = document.getElementById("userList");
+      div.innerHTML = users.map(u => {
+        return `<div class="fade-in" style='margin-bottom: 10px'>🧍 <b>${u.nickname}</b> (${u.email})<br>
+        💠 d: ${u.d||0}, do: ${u.do||0}, db: ${u.db||0}, ng: ${u.ng||0}, nf: ${u.nf||0}
+        <button onclick='removeUser("${u.email}")' style='margin-left:10px;'>Удалить</button></div>`;
+      }).join("");
+    }
+
+    // журнал
+    const logAction = (text) => {
+      let log = JSON.parse(localStorage.getItem("pbank_log")) || [];
+      log.push({ time: new Date().toLocaleString(), user: currentUser.nickname, action: text });
+      localStorage.setItem("pbank_log", JSON.stringify(log));
+    }
+
+    const originalAddBalance = addBalance;
+    addBalance = function() {
+      const nick = document.getElementById("targetNick").value.trim();
+      const amount = parseInt(document.getElementById("amount").value);
+      const currency = document.getElementById("currency").value;
+      originalAddBalance();
+      logAction(`Пополнение ${amount} ${currency} для ${nick}`);
+    }
+
+    const originalAddAdmin = addAdmin;
+    addAdmin = function() {
+      const nick = document.getElementById("newAdmin").value.trim();
+      originalAddAdmin();
+      logAction(`Добавлен админ: ${nick}`);
+    }
+
+    renderUsers();
+    </script>
+
+
 </body>
 </html>
