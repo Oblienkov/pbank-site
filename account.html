@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Личный кабинет</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #0a0a2a, #000000);
+      color: #fff;
+    }
+
+    header {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left a {
+      font-size: 24px;
+      color: #ff5fa2;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .header-right button {
+      background: linear-gradient(to right, #ff5fa2, #ff80c1);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+      gap: 40px;
+      flex-wrap: wrap;
+      min-height: calc(100vh - 160px);
+    }
+
+    .profile-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 300px;
+    }
+
+    .profile-card img {
+      height: 300px;
+      image-rendering: pixelated;
+      margin-bottom: 20px;
+    }
+
+    .profile-card h2 {
+      margin: 10px 0;
+      color: #ffa8d8;
+    }
+
+    .resources-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+      width: 340px;
+    }
+
+    .resources-card h3 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #ffb2d6;
+    }
+
+    .resource-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .resource-item img {
+      width: 32px;
+      height: 32px;
+      margin-right: 12px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: rgba(0,0,0,0.8);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <a href="index.html">П-Банк</a>
+    </div>
+    <div class="header-right">
+      <button onclick="logout()">Выйти</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="profile-card">
+      <img id="avatar" src="" alt="Скин игрока">
+      <h2 id="nickname">Игрок</h2>
+    </div>
+
+    <div class="resources-card">
+      <h3>Ваши ресурсы</h3>
+      <div class="resource-item"><img src="d.png" alt="Алмаз">Алмазы: <span id="d">0</span></div>
+      <div class="resource-item"><img src="do.png" alt="Алмазная руда">Алмазная руда: <span id="do">0</span></div>
+      <div class="resource-item"><img src="db.png" alt="Алмазный блок">Алмазные блоки: <span id="db">0</span></div>
+      <div class="resource-item"><img src="ng.png" alt="Незеритовый обломок">Незеритовые обломки: <span id="ng">0</span></div>
+      <div class="resource-item"><img src="nf.png" alt="Незеритовый слиток">Незеритовые слитки: <span id="nf">0</span></div>
+    </div>
+
+    <div class="resources-card" style="margin-top: 30px;">
+      <h3>Настройки аккаунта</h3>
+      <label>Email:</label>
+      <input type="email" id="newEmail" value="" style="width:100%;padding:8px;margin-bottom:10px;border-radius:6px;border:none;">
+      <label>Новый пароль:</label>
+      <input type="password" id="newPassword" placeholder="Оставьте пустым, если не менять" style="width:100%;padding:8px;margin-bottom:10px;border-radius:6px;border:none;">
+      <button onclick="updateAccount()" style="width:100%;padding:10px;border:none;border-radius:8px;background:linear-gradient(to right,#ff5fa2,#ff80c1);color:white;font-weight:bold;cursor:pointer;">Сохранить изменения</button>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 П-Банк
+  </footer>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem('pbank_currentUser'));
+
+    if (!user) {
+      alert("Вы не авторизованы!");
+      window.location.href = 'index.html';
+    }
+
+    function logout() {
+      localStorage.removeItem('pbank_currentUser');
+      window.location.href = 'index.html';
+    }
+
+    function updateAccount() {
+      const newEmail = document.getElementById('newEmail').value.trim();
+      const newPassword = document.getElementById('newPassword').value.trim();
+
+      let users = JSON.parse(localStorage.getItem('pbank_users')) || [];
+      const index = users.findIndex(u => u.email === user.email);
+      if (index === -1) return alert("Ошибка обновления");
+
+      if (newEmail && newEmail !== user.email) {
+        if (users.find(u => u.email === newEmail)) return alert("Email уже используется");
+        users[index].email = newEmail;
+      }
+
+      if (newPassword) users[index].password = newPassword;
+
+      localStorage.setItem('pbank_users', JSON.stringify(users));
+      localStorage.setItem('pbank_currentUser', JSON.stringify(users[index]));
+      alert("Данные обновлены!");
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById("nickname").textContent = user.nickname;
+      document.getElementById("avatar").src = `https://mc-heads.net/body/${user.nickname}/right`;
+
+      document.getElementById("newEmail").value = user.email;
+
+      document.getElementById('d').textContent = user.d || 0;
+      document.getElementById('do').textContent = user.do || 0;
+      document.getElementById('db').textContent = user.db || 0;
+      document.getElementById('ng').textContent = user.ng || 0;
+      document.getElementById('nf').textContent = user.nf || 0;
+    });
+  </script>
+</body>
+</html>
