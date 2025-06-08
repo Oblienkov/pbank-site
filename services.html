@@ -7,111 +7,111 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #0a0a2a, #000000);
+      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
       color: white;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
-
     header {
-      background: black;
-      padding: 20px;
+      background: #111;
+      padding: 20px 40px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
-
     header h1 a {
-      text-decoration: none;
       color: #ff5fa2;
+      text-decoration: none;
     }
-
     main {
       flex: 1;
-      max-width: 900px;
-      margin: 30px auto;
+      max-width: 1000px;
+      margin: 40px auto;
       padding: 20px;
     }
-
+    h2 { text-align: center; margin-bottom: 30px; }
     .services-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
     }
-
     .service {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 20px;
+      background: rgba(255,255,255,0.07);
       border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
       cursor: pointer;
-      transition: 0.3s;
-      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+      transition: transform 0.3s, background 0.3s;
     }
-
     .service:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.15);
+      transform: translateY(-5px);
     }
-
     .service i {
-      font-size: 32px;
+      font-size: 28px;
       margin-bottom: 10px;
       color: #ffa8d8;
     }
-
     .service h3 {
       margin: 0;
       font-size: 18px;
     }
-
+    footer {
+      background: rgba(0,0,0,0.8);
+      padding: 20px;
+      text-align: center;
+    }
     .modal {
       display: none;
       position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
       justify-content: center;
       align-items: center;
       z-index: 1000;
     }
-
     .modal-content {
       background: #1a1a2d;
       padding: 30px;
-      border-radius: 16px;
+      border-radius: 20px;
       width: 90%;
-      max-width: 400px;
+      max-width: 420px;
+      animation: fadeIn 0.3s ease;
     }
-
-    .modal-content h2 {
-      margin-top: 0;
-    }
-
     .modal-content input,
     .modal-content select,
     .modal-content button {
       width: 100%;
+      padding: 12px;
       margin-bottom: 12px;
-      padding: 10px;
-      border-radius: 8px;
       border: none;
+      border-radius: 10px;
       font-size: 15px;
     }
-
     .modal-content button {
       background: linear-gradient(to right, #ff5fa2, #ff80c1);
       color: white;
       font-weight: bold;
+      cursor: pointer;
     }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: rgba(0,0,0,0.8);
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .history-log {
+      max-height: 200px;
+      overflow-y: auto;
+      background: rgba(255,255,255,0.05);
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -121,7 +121,7 @@
   </header>
 
   <main>
-    <h2 style="text-align:center;">Услуги банка</h2>
+    <h2>Услуги банка</h2>
     <div class="services-grid">
       <div class="service" onclick="openModal('modalTopup')"><i class="fas fa-plus-circle"></i><h3>Пополнение</h3></div>
       <div class="service" onclick="openModal('modalTransfer')"><i class="fas fa-exchange-alt"></i><h3>Перевод</h3></div>
@@ -134,78 +134,140 @@
     </div>
   </main>
 
-  <footer>
-    © 2025 П-Банк
-  </footer>
+  <footer>© 2025 П-Банк</footer>
 
-  <!-- Модальные окна -->
-  <div class="modal" id="modalTopup"><div class="modal-content"><h2>Пополнение</h2>
-    <p>Для пополнения, пожалуйста, <a href="deposit.html" style="color:#ffa8d8;">запишитесь на визит</a> в банк.</p>
-    <button onclick="closeModal('modalTopup')">Закрыть</button></div></div>
+<!-- Модальные окна -->
+<div class="modal" id="modalTopup">
+  <div class="modal-content">
+    <h2>Пополнение</h2>
+    <p>Запишитесь на визит через <a href="deposit.html" style="color:#ffa8d8;">специальную страницу</a>.</p>
+    <button onclick="closeModal('modalTopup')">Закрыть</button>
+  </div>
+</div>
 
-  <div class="modal" id="modalTransfer"><div class="modal-content"><h2>Перевод игроку</h2>
-    <input id="toUser" placeholder="Ник получателя">
-    <select id="transferCurrency">
-      <option value="d">💎 Алмазы</option><option value="do">⛏️ Руда</option>
-      <option value="db">🔷 Блок</option><option value="ng">🔥 Обломок</option>
-      <option value="nf">⚔️ Слиток</option>
+<div class="modal" id="modalTransfer">
+  <div class="modal-content">
+    <h2>Перевод</h2>
+    <input id="toUser" placeholder="Кому (ник)">
+    <select id="currency">
+      <option value="d">💎 Алмазы</option>
+      <option value="do">⛏️ Руда</option>
+      <option value="db">🔷 Блок</option>
     </select>
-    <input id="transferAmount" type="number" placeholder="Сумма">
-    <button onclick="sendTransfer()">Отправить</button>
-    <button onclick="closeModal('modalTransfer')">Закрыть</button></div></div>
+    <input id="amount" type="number" placeholder="Сколько">
+    <button onclick="sendTransfer()">Перевести</button>
+    <button onclick="closeModal('modalTransfer')">Закрыть</button>
+  </div>
+</div>
 
-  <div class="modal" id="modalStore"><div class="modal-content"><h2>Хранение</h2>
-    <p>Ваши ресурсы в надёжном месте! Система защищена и синхронизирована с сайтом.</p>
+<div class="modal" id="modalExchange">
+  <div class="modal-content">
+    <h2>Обмен валюты</h2>
+    <select id="fromCurrency">
+      <option value="d">💎 Алмазы</option>
+      <option value="db">🔷 Блоки</option>
+    </select>
+    <select id="toCurrency">
+      <option value="db">🔷 Блоки</option>
+      <option value="d">💎 Алмазы</option>
+    </select>
+    <input type="number" id="exchangeAmount" placeholder="Сколько">
+    <button onclick="exchange()">Обменять</button>
+    <button onclick="closeModal('modalExchange')">Закрыть</button>
+  </div>
+</div>
+
+<div class="modal" id="modalHistory">
+  <div class="modal-content">
+    <h2>История операций</h2>
+    <div class="history-log" id="historyLog">Загрузка...</div>
+    <button onclick="closeModal('modalHistory')">Закрыть</button>
+  </div>
+</div>
+
+<div class="modal" id="modalStore">
+  <div class="modal-content"><h2>Хранение</h2><p>Все данные хранятся в LocalStorage браузера и доступны только вам.</p>
     <button onclick="closeModal('modalStore')">Закрыть</button></div></div>
 
-  <div class="modal" id="modalBonus"><div class="modal-content"><h2>Бонусы</h2>
-    <p>Получайте бонусы за визиты и активность. Бонусы начисляются автоматически!</p>
-    <button onclick="closeModal('modalBonus')">Закрыть</button></div></div>
-
-  <div class="modal" id="modalLoan"><div class="modal-content"><h2>Кредит</h2>
-    <input type="number" placeholder="Сумма (алмазы)">
-    <button onclick="alert('Заявка отправлена!')">Оформить</button>
+<div class="modal" id="modalLoan">
+  <div class="modal-content"><h2>Кредит</h2><p>Пока недоступно. Обратитесь к сотруднику банка.</p>
     <button onclick="closeModal('modalLoan')">Закрыть</button></div></div>
 
-  <div class="modal" id="modalExchange"><div class="modal-content"><h2>Обмен</h2>
-    <select><option>Из: 💎 Алмазы</option><option>Из: 🔷 Блок</option></select>
-    <select><option>На: ⚔️ Слиток</option><option>На: 🔥 Обломок</option></select>
-    <input type="number" placeholder="Сумма для обмена">
-    <button onclick="alert('Обмен произведён')">Обменять</button>
-    <button onclick="closeModal('modalExchange')">Закрыть</button></div></div>
+<div class="modal" id="modalBonus">
+  <div class="modal-content"><h2>Бонусы</h2><p>Бонусы начисляются за визиты и переводы!</p>
+    <button onclick="closeModal('modalBonus')">Закрыть</button></div></div>
 
-  <div class="modal" id="modalHistory"><div class="modal-content"><h2>История</h2>
-    <p>Здесь будет отображаться история ваших операций (переводы, пополнения и пр.).</p>
-    <button onclick="closeModal('modalHistory')">Закрыть</button></div></div>
-
-  <div class="modal" id="modalNotify"><div class="modal-content"><h2>Уведомления</h2>
-    <p>Вы будете получать уведомления при каждом переводе и пополнении.</p>
+<div class="modal" id="modalNotify">
+  <div class="modal-content"><h2>Уведомления</h2><p>Пока уведомления работают только внутри сайта.</p>
     <button onclick="closeModal('modalNotify')">Закрыть</button></div></div>
 
-  <script>
-    function openModal(id) {
-      document.getElementById(id).style.display = "flex";
-    }
-    function closeModal(id) {
-      document.getElementById(id).style.display = "none";
-    }
+<script>
+function openModal(id) {
+  if (id === 'modalHistory') renderHistory();
+  document.getElementById(id).style.display = 'flex';
+}
+function closeModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
 
-    function sendTransfer() {
-      const users = JSON.parse(localStorage.getItem("pbank_users")) || [];
-      const currentUser = JSON.parse(localStorage.getItem("pbank_currentUser"));
-      const sender = users.find(u => u.email === currentUser.email);
-      const receiver = users.find(u => u.nickname === document.getElementById("toUser").value.trim());
-      const currency = document.getElementById("transferCurrency").value;
-      const amount = parseInt(document.getElementById("transferAmount").value);
-      if (!receiver) return alert("Игрок не найден");
-      if (!amount || amount <= 0) return alert("Некорректная сумма");
-      if ((sender[currency] || 0) < amount) return alert("Недостаточно средств");
-      sender[currency] -= amount;
-      receiver[currency] = (receiver[currency] || 0) + amount;
-      localStorage.setItem("pbank_users", JSON.stringify(users));
-      alert("Перевод выполнен!");
-      closeModal('modalTransfer');
-    }
-  </script>
+function sendTransfer() {
+  const to = document.getElementById("toUser").value.trim();
+  const currency = document.getElementById("currency").value;
+  const amount = parseInt(document.getElementById("amount").value);
+  if (!to || !amount || amount <= 0) return alert("Неверные данные");
+
+  let users = JSON.parse(localStorage.getItem("pbank_users")) || [];
+  let current = JSON.parse(localStorage.getItem("pbank_currentUser"));
+  let sender = users.find(u => u.email === current.email);
+  let receiver = users.find(u => u.nickname === to);
+  if (!receiver) return alert("Игрок не найден");
+  if ((sender[currency] || 0) < amount) return alert("Недостаточно средств");
+
+  sender[currency] -= amount;
+  receiver[currency] = (receiver[currency] || 0) + amount;
+  localStorage.setItem("pbank_users", JSON.stringify(users));
+  logHistory(`Перевод ${amount} ${currency} игроку ${to}`);
+  alert("Успешно переведено!");
+  closeModal("modalTransfer");
+}
+
+function exchange() {
+  const from = document.getElementById("fromCurrency").value;
+  const to = document.getElementById("toCurrency").value;
+  const amt = parseInt(document.getElementById("exchangeAmount").value);
+  if (from === to || !amt || amt <= 0) return alert("Некорректный обмен");
+
+  let users = JSON.parse(localStorage.getItem("pbank_users")) || [];
+  let current = JSON.parse(localStorage.getItem("pbank_currentUser"));
+  let user = users.find(u => u.email === current.email);
+  let rates = { "d_db": 9, "db_d": 1/9 };
+
+  let key = from + "_" + to;
+  if (!rates[key]) return alert("Обмен недоступен");
+
+  let cost = from === "d" ? amt : amt * rates[key];
+  if ((user[from] || 0) < cost) return alert("Недостаточно средств");
+
+  user[from] -= cost;
+  user[to] = (user[to] || 0) + amt;
+  localStorage.setItem("pbank_users", JSON.stringify(users));
+  logHistory(`Обмен ${cost.toFixed(2)} ${from} на ${amt} ${to}`);
+  alert("Обмен завершён!");
+  closeModal("modalExchange");
+}
+
+function logHistory(entry) {
+  const history = JSON.parse(localStorage.getItem("pbank_history")) || [];
+  history.unshift({ time: new Date().toLocaleString(), text: entry });
+  localStorage.setItem("pbank_history", JSON.stringify(history));
+}
+
+function renderHistory() {
+  const history = JSON.parse(localStorage.getItem("pbank_history")) || [];
+  document.getElementById("historyLog").innerHTML = history.length === 0 ?
+    "Нет записей." :
+    history.map(h => `<div>📌 <b>${h.time}</b>: ${h.text}</div>`).join("");
+}
+</script>
 </body>
 </html>
