@@ -155,7 +155,7 @@
       }
     }
 
-    showPlayerInfo();
+    
 
       renderVisits();
     }
@@ -192,7 +192,7 @@
       }
     }
 
-    showPlayerInfo();
+    
 
     }
 
@@ -215,6 +215,22 @@
         "🕒 " + v.date + " — <b>" + v.nick + "</b> " + (v.comment ? "(" + v.comment + ")" : "")
       ).join("<br>");
     }
-  </script>
+  
+function showPlayerInfo() {
+  const currentUser = JSON.parse(localStorage.getItem("pbank_currentUser"));
+  if (!admins.includes(currentUser.nickname)) {
+    document.getElementById("playerName").textContent = currentUser.nickname;
+    let html = "";
+    ["d","do","db","ng","nf"].forEach(k => {
+      const value = currentUser[k] || 0;
+      html += "<img src='" + k + ".png' class='icon'> " + value + " ";
+    });
+    document.getElementById("playerBalance").innerHTML = html;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", showPlayerInfo);
+
+</script>
 </body>
 </html>
