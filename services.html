@@ -83,7 +83,7 @@
   <main>
     <h2>Наши услуги</h2>
 
-    <div class="service">
+    <div class="service" onclick="openModal('topupModal')" style="cursor:pointer;">
       <img src="d.png" alt="Алмаз">
       <div>
         <h3>Пополнение баланса</h3>
@@ -91,7 +91,7 @@
       </div>
     </div>
 
-    <div class="service">
+    <div class="service" onclick="openModal('transferModal')" style="cursor:pointer;">
       <img src="nf.png" alt="Незерит">
       <div>
         <h3>Переводы между игроками</h3>
@@ -99,7 +99,7 @@
       </div>
     </div>
 
-    <div class="service">
+    <div class="service" onclick="openModal('storageModal')" style="cursor:pointer;">
       <img src="db.png" alt="Блок">
       <div>
         <h3>Хранение ценностей</h3>
@@ -107,7 +107,7 @@
       </div>
     </div>
 
-    <div class="service">
+    <div class="service" onclick="openModal('bonusModal')" style="cursor:pointer;">
       <img src="ng.png" alt="Кэшбэк">
       <div>
         <h3>Кэшбэк и бонусы</h3>
@@ -115,32 +115,32 @@
       </div>
     </div>
   
-    <div class="service">
-      <div style="font-size: 36px;">💳</div>
+    <div class="service" onclick="openModal('loanModal')" style="cursor:pointer;">
+      <img src="loan.png" alt="Кредит">
       <div>
         <h3>Кредитование</h3>
         <p>Получите кредит в виде игровых ресурсов с возможностью возврата через сайт.</p>
       </div>
     </div>
 
-    <div class="service">
-      <div style="font-size: 36px;">🔄</div>
+    <div class="service" onclick="openModal('exchangeModal')" style="cursor:pointer;">
+      <img src="exchange.png" alt="Обмен">
       <div>
         <h3>Обмен валюты</h3>
         <p>Обменивайте одни ресурсы на другие по текущему курсу П-Банка.</p>
       </div>
     </div>
 
-    <div class="service">
-      <div style="font-size: 36px;">📜</div>
+    <div class="service" onclick="openModal('historyModal')" style="cursor:pointer;">
+      <img src="history.png" alt="История">
       <div>
         <h3>История операций</h3>
         <p>Просматривайте все действия: переводы, пополнения и списания прямо в личном кабинете.</p>
       </div>
     </div>
 
-    <div class="service">
-      <div style="font-size: 36px;">🔔</div>
+    <div class="service" onclick="openModal('notifModal')" style="cursor:pointer;">
+      <img src="notif.png" alt="Уведомления">
       <div>
         <h3>Уведомления</h3>
         <p>Получайте уведомления о переводах и действиях на ваш аккаунт.</p>
@@ -152,5 +152,87 @@
   <footer>
     &copy; 2025 П-Банк
   </footer>
+
+  
+  <div id="topupModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
+      <h2 style="margin-top:0;">Пополнение баланса</h2>
+      <p>Здесь будет подробная реализация функции <b>«Пополнение баланса»</b>.</p>
+      <button onclick="closeModal('topupModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
+    </div>
+  </div>
+
+  <div id="transferModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
+      <h2 style="margin-top:0;">Переводы между игроками</h2>
+      <p>Здесь будет подробная реализация функции <b>«Переводы между игроками»</b>.</p>
+      <button onclick="closeModal('transferModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
+    </div>
+  </div>
+
+  <div id="storageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
+      <h2 style="margin-top:0;">Хранение ценностей</h2>
+      <p>Здесь будет подробная реализация функции <b>«Хранение ценностей»</b>.</p>
+      <button onclick="closeModal('storageModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
+    </div>
+  </div>
+
+  <div id="bonusModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
+      <h2 style="margin-top:0;">Кэшбэк и бонусы</h2>
+      <p>Здесь будет подробная реализация функции <b>«Кэшбэк и бонусы»</b>.</p>
+      <button onclick="closeModal('bonusModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
+    </div>
+  </div>
+
+  <div id="loanModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
+      <h2 style="margin-top:0;">Кредитование</h2>
+      <p>Здесь будет подробная реализация функции <b>«Кредитование»</b>.</p>
+      <button onclick="closeModal('loanModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
+    </div>
+  </div>
+
+  <div id="exchangeModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
+      <h2 style="margin-top:0;">Обмен валюты</h2>
+      <p>Здесь будет подробная реализация функции <b>«Обмен валюты»</b>.</p>
+      <button onclick="closeModal('exchangeModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
+    </div>
+  </div>
+
+  <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
+      <h2 style="margin-top:0;">История операций</h2>
+      <p>Здесь будет подробная реализация функции <b>«История операций»</b>.</p>
+      <button onclick="closeModal('historyModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
+    </div>
+  </div>
+
+  <div id="notifModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:#1a1a2d; padding:30px; border-radius:16px; width:90%; max-width:400px; color:white; position:relative;">
+      <h2 style="margin-top:0;">Уведомления</h2>
+      <p>Здесь будет подробная реализация функции <b>«Уведомления»</b>.</p>
+      <button onclick="closeModal('notifModal')" style="margin-top:20px; background:none; color:#aaa; border:none;">Закрыть</button>
+    </div>
+  </div>
+
+  <script>
+    function openModal(id) {
+      document.getElementById(id).style.display = 'flex';
+    }
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+  </script>
 </body>
 </html>
