@@ -443,9 +443,9 @@
 
       const div = document.getElementById("userList");
       div.innerHTML = users.map(u => {
-        return `<div class="fade-in" style='margin-bottom: 10px'>🧍 <b>${u.nickname}</b> (${u.email})<br>
+        return '<div class="fade-in" style='margin-bottom: 10px'>🧍 <b>${u.nickname}</b> (${u.email})<br>
         💠 d: ${u.d||0}, do: ${u.do||0}, db: ${u.db||0}, ng: ${u.ng||0}, nf: ${u.nf||0}
-        <button onclick='removeUser("${u.email}")' style='margin-left:10px;'>Удалить</button></div>`;
+        <button onclick='removeUser("${u.email}")' style='margin-left:10px;'>Удалить</button></div>';
       }).join("");
     }
 
@@ -462,14 +462,14 @@
       const amount = parseInt(document.getElementById("amount").value);
       const currency = document.getElementById("currency").value;
       originalAddBalance();
-      logAction(`Пополнение ${amount} ${currency} для ${nick}`);
+      logAction('Пополнение ${amount} ${currency} для ${nick}');
     }
 
     const originalAddAdmin = addAdmin;
     addAdmin = function() {
       const nick = document.getElementById("newAdmin").value.trim();
       originalAddAdmin();
-      logAction(`Добавлен админ: ${nick}`);
+      logAction('Добавлен админ: ${nick}');
     }
 
     renderUsers();
