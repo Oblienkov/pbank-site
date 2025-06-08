@@ -143,20 +143,41 @@
   </footer>
 
   <script>
-    const currentUser = JSON.parse(localStorage.getItem('pbank_currentUser'));
+    
+    let currentUser = JSON.parse(localStorage.getItem('pbank_currentUser'));
+    if (!currentUser || !currentUser.email) {
+      alert("Вы не авторизованы!");
+      window.location.href = 'index.html';
+    }
+    
     if (!currentUser) {
       alert("Вы не авторизованы!");
       window.location.href = 'index.html';
     }
 
-    let users = JSON.parse(localStorage.getItem('pbank_users')) || [];
+    
+    let users = [];
+
+    try {
+      users = JSON.parse(localStorage.getItem('pbank_users')) || [];
+      if (!Array.isArray(users)) users = [];
+    } catch (e) {
+      users = [];
+    }
+    
 
     function logout() {
       localStorage.removeItem('pbank_currentUser');
       window.location.href = 'index.html';
     }
 
+    
     function renderUsers() {
+      users = JSON.parse(localStorage.getItem('pbank_users')) || [];
+      currentUser = JSON.parse(localStorage.getItem('pbank_currentUser'));
+      console.log("Loaded users:", users);
+      console.log("Current user:", currentUser);
+    
       const container = document.getElementById("userList");
       const emptyMsg = document.getElementById("noUsers");
       container.innerHTML = '';
